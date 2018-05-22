@@ -1,6 +1,6 @@
 function [ ] = MainControl( handles )
 %MAINCONTROL Controls all functions
-%   Controls all functions, plots and tables
+% Controls all functions, plots and tables
 % Copyright R Hyde 2017
 % Released under the GNU GPLver3.0
 % You should have received a copy of the GNU General Public License
@@ -8,8 +8,9 @@ function [ ] = MainControl( handles )
 % This file forms part of the demonstration software, known as CATaCoMB.
 % If you use this file please acknowledge the author and cite as a
 % reference:
-% Cluster-Based Ensemble Means for Climate Model Intercomparison
-% TBC
+% Hyde R, Hossaini R, Leeson A (2018) Cluster-based analysis of multi-model
+% climate ensembles. Geosci Model Dev Discuss 1–28 . doi: 10.5194/gmd-2017-317
+% 
 %
 % Main function to run the sub-functions for analysis
 % Inputs:
@@ -45,14 +46,14 @@ SigmaMeanEnsemble( handles )
 
 %% Predicted Truth
 StatusOutput (handles, 'Predicting truth....');
-TruthType = handles.popTruth.Value;
-if TruthType == 1
-    SimpleTruth ( handles );
-elseif TruthType == 2
-    SigmaTruth ( handles );
-else
-    StatusOutput( handles, 'Truth type selection error...');
-end
+% TruthType = handles.popTruth.Value;
+% if TruthType == 1
+% SimpleTruth ( handles );
+% elseif TruthType == 2
+%     SigmaTruth ( handles );
+% else
+%     StatusOutput( handles, 'Truth type selection error...');
+% end
 
 %% Cluster
 RunClustering (handles);

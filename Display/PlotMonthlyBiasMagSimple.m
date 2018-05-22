@@ -7,9 +7,11 @@ function [  ] = PlotMonthlyBiasMagSimple( handles )
 % This file forms part of the demonstration software, known as CATaCoMB.
 % If you use this file please acknowledge the author and cite as a
 % reference:
-% Cluster-Based Ensemble Means for Climate Model Intercomparison
-% TBC
+% Hyde R, Hossaini R, Leeson A (2018) Cluster-based analysis of multi-model
+% climate ensembles. Geosci Model Dev Discuss 1–28 . doi: 10.5194/gmd-2017-317
 %
+% Plots and saves the bias magnitude between the  simple MMM and the satellite
+% observations.
 
 if(~isdeployed)
   Root = fileparts(which(mfilename));
@@ -18,7 +20,7 @@ else
     Root=[];
 end
 %% Abs Simple MMM Bias
-Folder = ('..\Outputs\MonthlyBiasMagnitudeSimple');
+Folder = ('..\Outputs\MonthlyBiasMagnitudeSimpleMMM');
 
 BiasSimpleMMM = abs(getappdata(handles.figure1, 'BiasSimpleMMM'));
 Lat = unique(getappdata(handles.figure1, 'LatOrig'));
@@ -45,7 +47,7 @@ for Month = 1:12
     hCB = contourcbar;
     title(hCB,'Bias (DU)', 'FontSize', 10, 'FontWeight', 'bold');
     caxis([0,10])
-    title(sprintf('(%s) Absolute Bias Simple MMM, Month %i\n Mean Abs Bias %.2f (DU)', char(Month+96), Month, mean(Bias(:)) ))
+    title(sprintf('(%s) Month %i, Mean Abs Bias %.2f (DU)', char(Month+96), Month, mean(Bias(:)) ))
     Plots = findobj(gca,'Type','Axes');
     Plots.SortMethod = 'depth';
     set(gcf, 'Color', 'w');
@@ -74,5 +76,5 @@ clf
 imdisp({Files.name}, 'Size', [3,4], 'Indices', [12,11,10,9,8,7,6,5,4,3,2,1]);
 set(gcf, 'Color', 'w');
 hFMontage = figure(99);
-export_fig(hFMontage, '-m2', 'MonthlyBiasMagValues');
+export_fig(hFMontage, '-m2', 'MonthlyBiasMagValuesMMM.pdf');
 end

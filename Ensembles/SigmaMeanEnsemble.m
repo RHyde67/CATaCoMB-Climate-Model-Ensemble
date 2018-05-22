@@ -8,13 +8,13 @@ function [ ] = SigmaMeanEnsemble( handles )
 % This file forms part of the demonstration software, known as CATaCoMB.
 % If you use this file please acknowledge the author and cite as a
 % reference:
-% Cluster-Based Ensemble Means for Climate Model Intercomparison
-% TBC
+% Hyde R, Hossaini R, Leeson A (2018) Cluster-based analysis of multi-model
+% climate ensembles. Geosci Model Dev Discuss 1–28 . doi: 10.5194/gmd-2017-317
 %
 % Inputs:
 %   handles: handles to GUI
 % Outputs:
-%   none - data is stored i the GUI space.
+%   none - data is stored in the GUI space.
 
 %% get data from GUI
 ModelOzone = getappdata(handles.figure1,'OrigOzone');

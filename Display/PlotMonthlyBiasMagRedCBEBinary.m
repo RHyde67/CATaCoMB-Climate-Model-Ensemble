@@ -7,9 +7,11 @@ function [  ] = PlotMonthlyBiasMagRedCBEBinary( handles )
 % This file forms part of the demonstration software, known as CATaCoMB.
 % If you use this file please acknowledge the author and cite as a
 % reference:
-% Cluster-Based Ensemble Means for Climate Model Intercomparison
-% TBC
+% Hyde R, Hossaini R, Leeson A (2018) Cluster-based analysis of multi-model
+% climate ensembles. Geosci Model Dev Discuss 1–28 . doi: 10.5194/gmd-2017-317
 %
+% Plots and saves the bias magnitude between the cluster based ensemble, detailed in
+% the paper above, and the satellite observations.
 
 if(~isdeployed)
   Root = fileparts(which(mfilename));
@@ -18,13 +20,8 @@ else
     Root=[];
 end
 %%
-Folder = sprintf('..\\Outputs\\MonthlyBiasMagnitudeReduction%s%sBinary',...
-    handles.popCluster.String{handles.popCluster.Value},...
-    handles.popTruth.String{handles.popTruth.Value});
+Folder = sprintf('..\\Outputs\\MonthlyBiasMagnitudeReductionBinary');
 
-% BiasCBE = abs(getappdata(handles.figure1, 'BiasCBE'));
-% BiasSimpleMMM = abs(getappdata(handles.figure1, 'BiasSimpleMMM'));
-% BiasRed = BiasSimpleMMM - BiasCBE;
 CBEBiasRedMagBinary = getappdata(handles.figure1, 'CBEBiasRedMag');
 CBEBiasRedMagBinary(CBEBiasRedMagBinary>0)=1;
 CBEBiasRedMagBinary(CBEBiasRedMagBinary<0)=-1;
@@ -43,9 +40,8 @@ colormap(redblue);
 for Month = 1:12
     Bias = permute(CBEBiasRedMagBinary(Month,:,:), [2,3,1]);
     surfacem(X,Y,Bias);
-    title(sprintf('(%s) Binary of Abs Bias Reduction %s (%s) Month %i', char(Month+96),...
-        handles.popCluster.String{handles.popCluster.Value},...
-        handles.popTruth.String{handles.popTruth.Value},Month))
+    title(sprintf('(%s) Month %i', char(Month+96),...
+        Month))
     Plots = findobj(gca,'Type','Axes');
     Plots.SortMethod = 'depth';
     set(gcf, 'Color', 'w');
@@ -74,5 +70,5 @@ clf
 imdisp({Files.name}, 'Size', [3,4], 'Indices', [12,11,10,9,8,7,6,5,4,3,2,1]);
 set(gcf, 'Color', 'w');
 hFMontage = figure(99);
-export_fig(hFMontage,  '-m2', 'MonthlyBiasMagRedBinary');
+export_fig(hFMontage,  '-m2', 'MonthlyBiasMagRedBinary.pdf');
 end

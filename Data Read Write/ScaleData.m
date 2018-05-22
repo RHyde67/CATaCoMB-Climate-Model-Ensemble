@@ -7,8 +7,8 @@ function [  ] = ScaleData( handles )
 % This file forms part of the demonstration software, known as CATaCoMB.
 % If you use this file please acknowledge the author and cite as a
 % reference:
-% Cluster-Based Ensemble Means for Climate Model Intercomparison
-% TBC
+% Hyde R, Hossaini R, Leeson A (2018) Cluster-based analysis of multi-model
+% climate ensembles. Geosci Model Dev Discuss 1–28 . doi: 10.5194/gmd-2017-317
 %
 %   Normalises data 0-1 based on latitude *or longitude being 0-1, the
 %   other is scaled to same range, so spatial radii should be equal. Ozone
