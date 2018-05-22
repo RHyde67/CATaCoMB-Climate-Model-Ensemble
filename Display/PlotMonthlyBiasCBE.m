@@ -1,5 +1,5 @@
 function [  ] = PlotMonthlyBiasCBE( handles )
-%PLOTMONTHLYABSBIAS plots the Monthly Actual Bias
+%PLOTMONTHLYABSBIAS plots the Monthly Bias of the CBE
 % Copyright R Hyde 2017
 % Released under the GNU GPLver3.0
 % You should have received a copy of the GNU General Public License
@@ -7,9 +7,11 @@ function [  ] = PlotMonthlyBiasCBE( handles )
 % This file forms part of the demonstration software, known as CATaCoMB.
 % If you use this file please acknowledge the author and cite as a
 % reference:
-% Cluster-Based Ensemble Means for Climate Model Intercomparison
-% TBC
+% Hyde R, Hossaini R, Leeson A (2018) Cluster-based analysis of multi-model
+% climate ensembles. Geosci Model Dev Discuss 1–28 . doi: 10.5194/gmd-2017-317
 %
+% Plots and saves the bias between the cluster based ensemble and the satellite
+% observations.
 
 if(~isdeployed)
   Root = fileparts(which(mfilename));
@@ -18,9 +20,7 @@ else
     Root=[];
 end
 %% CBE Bias
-Folder = sprintf('..\\Outputs\\MonthlyBias%s%s',...
-    handles.popCluster.String{handles.popCluster.Value},...
-    handles.popTruth.String{handles.popTruth.Value}); % generate folder name for saving plots
+Folder = sprintf('..\\Outputs\\MonthlyBiasCBE'); % generate folder name for saving plots
 
 BiasCBE = getappdata(handles.figure1, 'BiasCBE');
 Lat = unique(getappdata(handles.figure1, 'LatOrig'));
@@ -42,9 +42,8 @@ for Month = 1:12
     hCB = contourcbar;
     title(hCB,'Bias (DU)', 'FontSize', 10, 'FontWeight', 'bold');
     caxis([-10,10])
-    title(sprintf('(%s) Bias %s (%s) Month %i\n Mean Bias %.2f (DU)', char(Month+96),...
-        handles.popCluster.String{handles.popCluster.Value},...
-        handles.popTruth.String{handles.popTruth.Value},Month, mean(Bias(:)) ))
+    title(sprintf('(%s) Month %i, Mean Bias %.2f (DU)', char(Month+96),...
+        Month, mean(Bias(:)) ))
     Plots = findobj(gca,'Type','Axes');
     Plots.SortMethod = 'depth';
     set(gcf, 'Color', 'w');
@@ -76,5 +75,5 @@ clf
 imdisp({Files.name}, 'Size', [3,4], 'Indices', [12,11,10,9,8,7,6,5,4,3,2,1]);
 set(gcf, 'Color', 'w');
 hFMontage = figure(99);
-export_fig(hFMontage, '-m2', sprintf('MonthlyBias'));
+export_fig(hFMontage, '-m2', sprintf('MonthlyBiasCBE.pdf'));
 end

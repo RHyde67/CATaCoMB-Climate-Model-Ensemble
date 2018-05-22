@@ -1,5 +1,5 @@
 function [  ] = PlotMonthlyBiasMagRedCBE( handles )
-%PLOTMONTHLYABSBIAS plots the Monthly Actual Bias
+%PLOTMONTHLYABSBIAS plots the Monthly Bias reduction
 % Copyright R Hyde 2017
 % Released under the GNU GPLver3.0
 % You should have received a copy of the GNU General Public License
@@ -7,9 +7,11 @@ function [  ] = PlotMonthlyBiasMagRedCBE( handles )
 % This file forms part of the demonstration software, known as CATaCoMB.
 % If you use this file please acknowledge the author and cite as a
 % reference:
-% Cluster-Based Ensemble Means for Climate Model Intercomparison
-% TBC
+% Hyde R, Hossaini R, Leeson A (2018) Cluster-based analysis of multi-model
+% climate ensembles. Geosci Model Dev Discuss 1–28 . doi: 10.5194/gmd-2017-317
 %
+% Plots and saves the monthly bias reduction when comparing the cluster based
+% ensemble and the simple MMM.
 
 if(~isdeployed)
   Root = fileparts(which(mfilename));
@@ -18,13 +20,8 @@ else
     Root=[];
 end
 %%
-Folder = sprintf('..\\Outputs\\MonthlyBiasMagnitudeReduction%s%s',...
-    handles.popCluster.String{handles.popCluster.Value},...
-    handles.popTruth.String{handles.popTruth.Value});
+Folder = sprintf('..\\Outputs\\MonthlyBiasMagnitudeReduction');
 
-% BiasCBE = abs(getappdata(handles.figure1, 'BiasCBE'));
-% BiasSimpleMMM = abs(getappdata(handles.figure1, 'BiasSimpleMMM'));
-% BiasRed = BiasSimpleMMM - BiasCBE;
 CBEBiasRedMag = getappdata(handles.figure1, 'CBEBiasRedMag');
 Lat = unique(getappdata(handles.figure1, 'LatOrig'));
 Lon = unique(getappdata(handles.figure1, 'LonOrig'));
@@ -43,11 +40,10 @@ for Month = 1:12
     
     hCM = contourfm(X, Y, Bias, -5:1:5, 'LineStyle', 'none');
     hCB = contourcbar;
-    title(hCB,sprintf('Bias Reduction\n(DU)'), 'FontSize', 10, 'FontWeight', 'bold');
+    title(hCB,sprintf('Bias Red\n(DU)'), 'FontSize', 10, 'FontWeight', 'bold');
     caxis([-5, 5])
-    title(sprintf('(%s) Bias Reduction %s (%s) Month %i\n Mean %.2f DU, Integrated %.1f DU', char(Month+96),...
-        handles.popCluster.String{handles.popCluster.Value},...
-        handles.popTruth.String{handles.popTruth.Value},Month, mean(Bias(:)), sum(Bias(:)) ))
+    title(sprintf('(%s) Month %i, Mean %.2f DU, Integrated %.1f DU', char(Month+96),...
+        Month, mean(Bias(:)), sum(Bias(:)) ))
     Plots = findobj(gca,'Type','Axes');
     Plots.SortMethod = 'depth';
     set(gcf, 'Color', 'w');
@@ -76,5 +72,5 @@ clf
 imdisp({Files.name}, 'Size', [3,4], 'Indices', [12,11,10,9,8,7,6,5,4,3,2,1]);
 set(gcf, 'Color', 'w');
 hFMontage = figure(99);
-export_fig(hFMontage, '-m2', 'MonthlyBiasMagRedValues');
+export_fig(hFMontage, '-m2', 'MonthlyBiasMagRedValues.pdf');
 end

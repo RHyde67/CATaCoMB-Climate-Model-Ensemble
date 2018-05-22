@@ -7,8 +7,8 @@ function [ ] = DDC_Ensemble2( handles )
 % This file forms part of the demonstration software, known as CATaCoMB.
 % If you use this file please acknowledge the author and cite as a
 % reference:
-% Cluster-Based Ensemble Means for Climate Model Intercomparison
-% TBC
+% Hyde R, Hossaini R, Leeson A (2018) Cluster-based analysis of multi-model
+% climate ensembles. Geosci Model Dev Discuss 1–28 . doi: 10.5194/gmd-2017-317
 %
 % Generates a cluster based MMM
 % Inputs:
@@ -33,7 +33,8 @@ ClusterOzoneRad = getappdata(handles.figure1,'ClusterOzoneRad');
 Lat = unique(LatData);
 Lon = unique(LonData);
 CBEMonth = zeros(12, size(Lon,1), size(Lat,1)); % pre-allocate memory for All monthly CBE
-
+ClusterChoiceErrors = 0; % count number of times 'most common' cluster does not contain MMM, and it is not a draw
+ClusterMMMDefault=0; % count number of times more than one 'most common' cluster, so default to MMM value
 for Month = 1 : size(MonthClusters,2)
     CBE = zeros(size(Lon,1), size(Lat,1)); % pre-allocate memory for CBE
     Res4Ens = permute(MonthResults(Month,:,:),[2,3,1]); % [lat, lon, O3, cluster, model]
@@ -44,16 +45,50 @@ for Month = 1 : size(MonthClusters,2)
             % find all the data at the location being considered
             DataAtLoc = Res4Ens(Res4Ens(:,1)==Lat(LatIdx) & Res4Ens(:,2)==Lon(LonIdx),:);
             % find cluster with 'Truth' value in it
-            CorrectCluster = DataAtLoc(DataAtLoc(:,5)==TruthModel,4);
-            CorrectClusterMean = nanmean(DataAtLoc(DataAtLoc(:,4)==CorrectCluster,3));
-            CBE(LonIdx,LatIdx) = CorrectClusterMean;
-            % Additional Info
-            ModelsUsed = DataAtLoc(DataAtLoc(:,4)==CorrectCluster,5);
-            ModelCountYear(LonIdx, LatIdx, ModelsUsed) = ModelCountYear(LonIdx, LatIdx, ModelsUsed)+1;
-            ClusterLatRad(LonIdx, LatIdx, Month) = MonthClusters(Month).Rad(CorrectCluster,1);
-            ClusterLonRad(LonIdx, LatIdx, Month) = MonthClusters(Month).Rad(CorrectCluster,2);
-            ClusterOzoneRad(LonIdx, LatIdx, Month) = MonthClusters(Month).Rad(CorrectCluster,3);
-            ClusterUsed(LonIdx, LatIdx, Month) = CorrectCluster;
+%             CorrectCluster = DataAtLoc(DataAtLoc(:,5)==TruthModel,4);
+            [Mode, Freq1, AllModes] = mode(DataAtLoc(:,4));
+            if size(AllModes{1},1) == 1 % if 1 mode take mean of that cluster
+                CorrectCluster = Mode;
+                CorrectClusterMean = nanmean(DataAtLoc(DataAtLoc(:,4)==CorrectCluster,3));
+                CBE(LonIdx,LatIdx) = CorrectClusterMean;
+                % Additional Info
+                ModelsUsed = DataAtLoc(DataAtLoc(:,4)==CorrectCluster,5);
+                ModelCountYear(LonIdx, LatIdx, ModelsUsed) = ModelCountYear(LonIdx, LatIdx, ModelsUsed)+1;
+                ClusterLatRad(LonIdx, LatIdx, Month) = MonthClusters(Month).Rad(CorrectCluster,1);
+                ClusterLonRad(LonIdx, LatIdx, Month) = MonthClusters(Month).Rad(CorrectCluster,2);
+                ClusterOzoneRad(LonIdx, LatIdx, Month) = MonthClusters(Month).Rad(CorrectCluster,3);
+                ClusterUsed(LonIdx, LatIdx, Month) = CorrectCluster;
+                
+                [Mode2, Freq2, AllModes] = mode(DataAtLoc( DataAtLoc(:,4) ~= CorrectCluster,4)); % find 2nd most populous cluster
+                
+                ClusterRatioTemp = ( Freq2 / Freq1 );
+                
+            else % if more than one mode
+                CorrectCluster = -999;
+                Data4Mean = [];
+                AllModes = AllModes{1};
+                ModelsUsed = [];
+                for idxAM = 1 : size(AllModes,1)
+                    Data4Mean = [Data4Mean;DataAtLoc(DataAtLoc(:,4)==AllModes(idxAM),3)];
+                    ModelsUsed = [ModelsUsed; DataAtLoc(DataAtLoc(:,4)==AllModes(idxAM),5)];
+                end
+                MultClusterMean = nanmean(Data4Mean);
+                CBE(LonIdx,LatIdx) = MultClusterMean;
+                % Additional Info
+%                 ModelsUsed = DataAtLoc(DataAtLoc(:,4)==CorrectCluster,5);
+                ModelCountYear(LonIdx, LatIdx, ModelsUsed) = ModelCountYear(LonIdx, LatIdx, ModelsUsed)+1;
+                ClusterLatRad(LonIdx, LatIdx, Month) = -999;
+                ClusterLonRad(LonIdx, LatIdx, Month) = -999;
+                ClusterOzoneRad(LonIdx, LatIdx, Month) = -999;
+                ClusterUsed(LonIdx, LatIdx, Month) = CorrectCluster;
+                
+                ClusterRatioTemp = 1;
+            end
+            
+            ClusterRatio(LonIdx, LatIdx, Month) = ClusterRatioTemp;
+            
+            
+
         end
     end
     CBEMonth(Month,:,:) = CBE;
@@ -65,6 +100,7 @@ setappdata(handles.figure1,'ClusterLatRad', ClusterLatRad);
 setappdata(handles.figure1,'ClusterLonRad', ClusterLonRad);
 setappdata(handles.figure1,'ClusterOzoneRad', ClusterOzoneRad);
 setappdata(handles.figure1,'CBEMonth', CBEMonth);
+setappdata(handles.figure1,'ClusterRatio', ClusterRatio);
 
 end % end function
 

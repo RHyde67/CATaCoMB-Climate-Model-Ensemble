@@ -7,8 +7,8 @@ function [ ] = RunClustering( handles )
 % This file forms part of the demonstration software, known as CATaCoMB.
 % If you use this file please acknowledge the author and cite as a
 % reference:
-% Cluster-Based Ensemble Means for Climate Model Intercomparison
-% TBC
+% Hyde R, Hossaini R, Leeson A (2018) Cluster-based analysis of multi-model
+% climate ensembles. Geosci Model Dev Discuss 1–28 . doi: 10.5194/gmd-2017-317
 %
 % Runs DDC clustering on scaled data and back-references to original data
 % values to generate clusters of original data.
@@ -26,22 +26,20 @@ if Scaled_Unscaled == 0
     GridDistances = getappdata(handles.figure1,'GridDistance');
     PredictedTruthScaled = getappdata(handles.figure1, 'PredictedTruthScaled');
     ScaledOzone = getappdata(handles.figure1, 'ScaledOzone');
-    ScaledOzone(15,:,:,:) = PredictedTruthScaled;
     ScaledObsOzone = getappdata(handles.figure1, 'ScaledObsOzone');
     RadOzone = getappdata(handles.figure1, 'RadO3');
     
     % original values for results
     OrigOzone = getappdata(handles.figure1,'OrigOzone');
     PredictedTruth = getappdata(handles.figure1,'PredictedTruth');
-    OrigOzone(15,:,:,:) = PredictedTruth;
     LatOrig = getappdata(handles.figure1, 'LatOrig');
     LonOrig = getappdata(handles.figure1, 'LonOrig');
     [X, Y] = meshgrid(LatOrig(1,:),LonOrig(1,:));
-    LatLonOrig = repmat([X(:),Y(:)], 15, 1);
+    LatLonOrig = repmat([X(:),Y(:)], 14, 1);
     ObsOrig = getappdata(handles.figure1, 'ObsData');
     
     [X, Y] = meshgrid(ScaledLat(1,:),ScaledLon(1,:));
-    LatLon = repmat([X(:),Y(:)], 15, 1);
+    LatLon = repmat([X(:),Y(:)], 14, 1);
     
     % Convert to 2D arrays for clustering
     for Month = 1 : 12
@@ -50,7 +48,7 @@ if Scaled_Unscaled == 0
         Temp = permute(OrigOzone(:, Month, :, :), [3,4,1,2]);
         Ozone(:,Month) = Temp(:);
     end
-    ModelNum = ones(1656,15).*[1:15];
+    ModelNum = ones(1656,14).*[1:14];
 
     % set number of grid spaces for radii
     NumLatGrids = str2double(handles.editGridLat.String);
@@ -60,24 +58,21 @@ if Scaled_Unscaled == 0
 
     StatusOutput( handles, 'Clustering...');
     tic
-    if handles.popCluster.Value == 1
-        for Month = 1:12
-            StatusOutput( handles, sprintf('Clustering month %i...', Month));
-            Data4Cluster = [LatLon,Ozone4Cluster(:,Month)];
+    for Month = 1:12
+        StatusOutput( handles, sprintf('Clustering month %i...', Month));
+        Data4Cluster = [LatLon,Ozone4Cluster(:,Month)];
 
-             % generate cluster results, cluster results are not in the same order as sent
-            [Clusters, Results1] = DDC_ver01_1_ACCMIP(Data4Cluster, [RadLat, RadLon, RadOzone], 0, 0);
-            % return results to original order
-            [~, idx1] = ismember(Data4Cluster, Results1(:,1:3), 'rows'); % indices in results where data is found
-            Results = [LatLonOrig,Ozone(:,Month),Results1(idx1,end),ModelNum(:)]; % [lat, lon, O3, Cluster, Model]
-            
-            MonthClusters(Month) = Clusters;
-            MonthResults(Month,:,:) = Results;
-            MonthResultsScaled(Month,:,:) = Results1;
-        end
-    elseif handles.popCluster.Value == 2
-        % DDCAS
+         % generate cluster results, cluster results are not in the same order as sent
+        [Clusters, Results1] = DDC_ver01_1_ACCMIP(Data4Cluster, [RadLat, RadLon, RadOzone], 0, 0);
+        % return results to original order
+        [~, idx1] = ismember(Data4Cluster, Results1(:,1:3), 'rows'); % indices in results where data is found
+        Results = [LatLonOrig,Ozone(:,Month),Results1(idx1,end),ModelNum(:)]; % [lat, lon, O3, Cluster, Model]
+
+        MonthClusters(Month) = Clusters;
+        MonthResults(Month,:,:) = Results;
+        MonthResultsScaled(Month,:,:) = Results1;
     end
+
     t2=toc;
     setappdata(handles.figure1, 'MonthClusters', MonthClusters);
     setappdata( handles.figure1, 'MonthResults', MonthResults);

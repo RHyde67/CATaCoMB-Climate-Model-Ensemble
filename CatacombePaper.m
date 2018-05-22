@@ -7,8 +7,9 @@ function varargout = CatacombePaper(varargin)
 % This file forms part of the demonstration software, known as CATaCoMB.
 % If you use this file please acknowledge the author and cite as a
 % reference:
-% Cluster-Based Ensemble Means for Climate Model Intercomparison
-% TBC
+% Hyde R, Hossaini R, Leeson A (2018) Cluster-based analysis of multi-model
+% climate ensembles. Geosci Model Dev Discuss 1–28 . doi: 10.5194/gmd-2017-317
+%
 %
 % This file is the main code for the GUI to reproduce the analysis and
 % figures used onthe aforementioned paper.
@@ -35,7 +36,7 @@ function varargout = CatacombePaper(varargin)
 
 % Edit the above text to modify the response to help CatacombePaper
 
-% Last Modified by GUIDE v2.5 18-Dec-2017 16:54:16
+% Last Modified by GUIDE v2.5 22-May-2018 09:57:27
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -402,13 +403,13 @@ function checkMonthBiasAbsRed_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of checkMonthBiasAbsRed
 
 
-% --- Executes on button press in checkMonthlyBiasRedBinary.
-function checkMonthlyBiasRedBinary_Callback(hObject, eventdata, handles)
-% hObject    handle to checkMonthlyBiasRedBinary (see GCBO)
+% --- Executes on button press in checkMonthBiasRedBinary.
+function checkMonthBiasRedBinary_Callback(hObject, eventdata, handles)
+% hObject    handle to checkMonthBiasRedBinary (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of checkMonthlyBiasRedBinary
+% Hint: get(hObject,'Value') returns toggle state of checkMonthBiasRedBinary
 
 
 % --- Executes on button press in checkMonthBiasRed.
@@ -418,3 +419,39 @@ function checkMonthBiasRed_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkMonthBiasRed
+
+
+% --- Executes on button press in checkClusterRatio.
+function checkClusterRatio_Callback(hObject, eventdata, handles)
+% hObject    handle to checkClusterRatio (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkClusterRatio
+
+
+% --- Executes on button press in checkClusterRatioMap.
+function checkClusterRatioMap_Callback(hObject, eventdata, handles)
+% hObject    handle to checkClusterRatioMap (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkClusterRatioMap
+
+
+% --- Executes on button press in checkOzoneRad.
+function checkOzoneRad_Callback(hObject, eventdata, handles)
+% hObject    handle to checkOzoneRad (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkOzoneRad
+
+
+% --- Executes on button press in checkBiasHist.
+function checkBiasHist_Callback(hObject, eventdata, handles)
+% hObject    handle to checkBiasHist (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkBiasHist
